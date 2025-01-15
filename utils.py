@@ -59,33 +59,46 @@ class temp(object):
 
 
 async def is_req_subscribed(bot, query):
-    if await db.find_join_req(query.from_user.id):
-        return True
+    """
+    Check if the user has already sent a join request or is subscribed to AUTH_CHANNEL.
+    """
     try:
+        if await db.find_join_req(query.from_user.id):
+            return True
         user = await bot.get_chat_member(AUTH_CHANNEL, query.from_user.id)
+        if user.status != enums.ChatMemberStatus.BANNED:
+            return True
     except UserNotParticipant:
         pass
     except Exception as e:
-        logger.exception(e)
-    else:
-        if user.status != enums.ChatMemberStatus.BANNED:
-            return True
-
+        logger.exception(f"Error in is_req_subscribed: {e}")
     return False
 
+
 async def is_subscribed(bot, query, channels):
+    """
+    Check if the user is subscribed to the provided channels and generate invite links/buttons for unsubscribed channels.
+    """
     btn = []
     for channel_id in channels:
         try:
             chat = await bot.get_chat(int(channel_id))
             await bot.get_chat_member(channel_id, query.from_user.id)
         except UserNotParticipant:
-            btn.append(
-                [InlineKeyboardButton(f'❤️ {chat.title}', url=chat.invite_link)]
-            )
+            try:
+                invite_link = await bot.create_chat_invite_link(
+                    channel_id,
+                    creates_join_request=False
+                )
+                btn.append(
+                    [InlineKeyboardButton(f'❤️ Join {chat.title}', url=invite_link.invite_link)]
+                )
+            except Exception as e:
+                logger.exception(f"Error generating invite link for {chat.title}: {e}")
         except Exception as e:
-            pass
+            logger.exception(f"Error checking subscription for {chat.title}: {e}")
     return btn
+
 
 async def is_check_admin(bot, chat_id, user_id):
     try:
