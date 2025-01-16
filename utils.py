@@ -25,7 +25,7 @@ import json
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
+join_db = JoinReqs
 BTN_URL_REGEX = re.compile(
     r"(\[([^\[]+?)\]\((buttonurl|buttonalert):(?:/{0,2})(.+?)(:same)?\))"
 )
