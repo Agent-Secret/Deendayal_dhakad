@@ -1,11 +1,14 @@
 FROM python:3.10.8-slim-buster
-RUN apt update && apt upgrade -y && apt install git -y && rm -rf /var/lib/apt/lists/*
-WORKDIR /Deendayal-botz
 
-COPY requirements.txt .
-RUN pip3 install -U pip && pip3 install --no-cache-dir -r requirements.txt
+RUN apt update && apt upgrade -y
+RUN apt install git -y
+COPY requirements.txt /requirements.txt
 
-COPY . .
+RUN pip3 install -U pip --root-user-action=ignore && pip3 install -U -r /requirements.txt --root-user-action=ignore
+RUN mkdir /Deendayal_botz
+WORKDIR /Deendayal_botz
+COPY start.sh /start.sh
+CMD ["/bin/bash", "/start.sh"]
 
-CMD ["python", "bot.py"]
+
 

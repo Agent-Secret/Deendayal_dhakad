@@ -25,8 +25,10 @@ If you encounter any issues **Deploying** the bot, feel free to seek assistance 
 
 [![Join Support Group    ](https://img.shields.io/badge/Join%20Support%20Group-Click%20Here-blue?style=flat&logo=telegram&labelColor=white&link=https://t.me/Deendayal_Support_Group)](https://t.me/Deendayal_Support_Group)
 
+#𝑫𝒐𝒖𝒃𝒍𝒆 𝑫𝑩 𝒔𝒖𝒑𝒑𝒐𝒓𝒕
+
   **features**
-- [x] 𝒔𝒕𝒓𝒆𝒂𝒎 𝒎𝒐𝒅𝒆 𝒐𝒏 𝒐𝒇𝒇
+- [x] 𝒔𝒕𝒓𝒆𝒂𝒎 𝒎𝒐𝒅𝒆 𝒐𝒏 𝒐𝒇𝒇 
 - [x] 𝑼𝑰 𝒊𝒎𝒑𝒓𝒐𝒗𝒆
 - [x] 𝑴𝒖𝒍𝒕𝒊 𝒇𝒔𝒖𝒃 𝒔𝒖𝒑𝒑𝒐𝒓𝒕
 - [x] 𝑼𝒑𝒅𝒂𝒕𝒆 𝒎𝒐𝒗𝒊𝒆 𝒊𝒏𝒇𝒐𝒓𝒎𝒂𝒕𝒊𝒐𝒏 𝒐𝒏 𝒐𝒇𝒇 𝒄𝒐𝒎𝒎𝒂𝒏𝒅
