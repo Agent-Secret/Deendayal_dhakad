@@ -16,7 +16,6 @@ from datetime import datetime, date, time, timedelta
 import string
 from typing import List
 from database.users_chats_db import db
-from database.join_reqs import JoinReqs
 from bs4 import BeautifulSoup
 import requests
 import aiohttp
@@ -26,7 +25,7 @@ import json
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-join_db = JoinReqs
+
 BTN_URL_REGEX = re.compile(
     r"(\[([^\[]+?)\]\((buttonurl|buttonalert):(?:/{0,2})(.+?)(:same)?\))"
 )
@@ -59,66 +58,34 @@ class temp(object):
     VERIFY = {}
 
 
-async def pub_is_subscribed(bot, query, channels):
-    """
-    Check if a user is subscribed to multiple channels and generate join buttons for unsubscribed channels.
-
-    Args:
-        bot (Client): The Pyrogram bot client.
-        query (CallbackQuery): Callback query object from the user.
-        channels (list): List of channel IDs to check subscription status.
-
-    Returns:
-        list: InlineKeyboard buttons for unsubscribed channels, if any.
-    """
-    btn = []
+async def is_req_subscribed(bot, query):
+    if await db.find_join_req(query.from_user.id):
+        return True
     try:
-        for channel_id in channels:
-            try:
-                chat = await bot.get_chat(int(channel_id))
-                await bot.get_chat_member(channel_id, query.from_user.id)          
-            except UserNotParticipant:
-                try:
-                    invite_link = chat.invite_link or (await bot.create_chat_invite_link(
-                        channel_id, creates_join_request=False
-                    )).invite_link
-                    btn.append(
-                        [InlineKeyboardButton(f'❤️ Join {chat.title}', url=invite_link)]
-                    )
-                except ChatInviteLinkCreate as e:
-                    logger.warning(f"Failed to create invite link for {chat.title}: {e}")
-                except Exception as e:
-                    logger.exception(f"Unexpected error for channel {chat.title}: {e}")            
-            except Exception as e:
-                logger.exception(f"Error fetching channel info for ID {channel_id}: {e}")
-    except Exception as outer_error:
-        logger.exception(f"Error in pub_is_subscribed: {outer_error}")
-    return btn
+        user = await bot.get_chat_member(AUTH_CHANNEL, query.from_user.id)
+    except UserNotParticipant:
+        pass
+    except Exception as e:
+        logger.exception(e)
+    else:
+        if user.status != enums.ChatMemberStatus.BANNED:
+            return True
+
+    return False
 
 async def is_subscribed(bot, query, channels):
-    """
-    Check if the user is subscribed to the provided channels and generate invite links/buttons for unsubscribed channels.
-    """
     btn = []
     for channel_id in channels:
         try:
             chat = await bot.get_chat(int(channel_id))
             await bot.get_chat_member(channel_id, query.from_user.id)
         except UserNotParticipant:
-            try:
-                invite_link = await bot.create_chat_invite_link(
-                    channel_id,
-                    creates_join_request=False
-                )
-                btn.append(
-                    [InlineKeyboardButton(f'❤️ Join {chat.title}', url=invite_link.invite_link)]
-                )
-            except Exception as e:
-                logger.exception(f"Error generating invite link for {chat.title}: {e}")
+            btn.append(
+                [InlineKeyboardButton(f'❤️ {chat.title}', url=chat.invite_link)]
+            )
         except Exception as e:
-            logger.exception(f"Error checking subscription for {chat.title}: {e}")
+            pass
     return btn
-
 
 async def is_check_admin(bot, chat_id, user_id):
     try:
@@ -895,6 +862,3 @@ async def log_error(client, error_message):
         )
     except Exception as e:
         print(f"Failed to log error: {e}")
-
-
-
