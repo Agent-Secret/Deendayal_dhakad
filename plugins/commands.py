@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 TIMEZONE = "Asia/Kolkata"
 BATCH_FILES = {}
-join_db = JoinReqs
+
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -1521,5 +1521,3 @@ async def confirmation_handler(client, callback_query):
     elif action == "no":
         await callback_query.message.delete()
     await callback_query.answer()
-
-
