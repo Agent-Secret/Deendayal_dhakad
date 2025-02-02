@@ -43,14 +43,6 @@ pyshorteners
 pyromod
 colorama
 
-# # YouTube Downloading Tools
-# ffmpeg
-# youtube_search
-# youtube-search-python==1.4.6
-# yt-dlp
-# youtube-dl
-# requests
-# ytthumb
 
 # Text Matching Tools
 fuzzywuzzy

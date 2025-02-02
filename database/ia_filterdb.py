@@ -71,6 +71,9 @@ async def choose_mediaDB():
 
 async def send_msg(bot, filename, caption): 
     try:
+        filename = re.sub(r'\(\@\S+\)|\[\@\S+\]|\b@\S+|\bwww\.\S+', '', filename).strip()
+        caption = re.sub(r'\(\@\S+\)|\[\@\S+\]|\b@\S+|\bwww\.\S+', '', caption).strip()
+        
         year_match = re.search(r"\b(19|20)\d{2}\b", caption)
         if year_match:
             year = year_match.group(0)
